@@ -11,7 +11,8 @@ export let DiamondAddress: string;
 
 export async function deployDiamond() {
   const accounts = await ethers.getSigners();
-  const contractOwner = accounts[0];
+  // const contractOwner = accounts[0];
+  const contractOwner = "0xB6E63c79B4dF12DF083f6Ca8AD56D655b63653b7";
 
   // deploy DiamondCutFacet
   const DiamondCutFacet = await ethers.getContractFactory("DiamondCutFacet");
@@ -22,8 +23,11 @@ export async function deployDiamond() {
   // deploy Diamond
   const Diamond = await ethers.getContractFactory("Diamond");
   const diamond = await Diamond.deploy(
-    contractOwner.address,
-    diamondCutFacet.address
+    contractOwner,
+    diamondCutFacet.address,
+    "TOBY",
+    "TBY",
+    18
   );
   await diamond.deployed();
   console.log("Diamond deployed:", diamond.address);
@@ -39,7 +43,7 @@ export async function deployDiamond() {
   // deploy facets
   console.log("");
   console.log("Deploying facets");
-  const FacetNames = ["DiamondLoupeFacet", "OwnershipFacet"];
+  const FacetNames = ["DiamondLoupeFacet", "OwnershipFacet", "ERC20Facet"];
   const cut = [];
   for (const FacetName of FacetNames) {
     const Facet = await ethers.getContractFactory(FacetName);
@@ -86,3 +90,13 @@ if (require.main === module) {
 }
 
 exports.deployDiamond = deployDiamond;
+
+// DiamondCutFacet deployed: 0x333187B080Fc44DeeD71624f8f365B3D907b531B
+// Diamond deployed: 0xd5100cE8d14033b6d847a4692159B3090895F0bd
+// DiamondInit deployed: 0xfa443369734dDE258Ff083B9c1976c1784Ce28c0
+
+// Deploying facets
+// DiamondLoupeFacet deployed: 0x33c2d65a1AD2ddf158f54053E3441CA601046916
+// OwnershipFacet deployed: 0x0Aac5d386deD755320312D14C5f796011C386D65
+// ERC20Facet deployed: 0xEaCB215c77b422A126c47CA0E132db4ca8E9f01B
+// Diamond cut tx:  0x0056d6798a982b8e81e7b1ceb9c29ab65b11b2b62c4c1703da8224767fdbb082
